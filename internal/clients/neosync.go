@@ -15,7 +15,7 @@ import (
 
 	"github.com/crossplane/upjet/pkg/terraform"
 
-	"github.com/upbound/upjet-provider-template/apis/v1beta1"
+	"github.com/jellysmack/provider-neosync/apis/v1beta1"
 )
 
 const (
@@ -24,8 +24,12 @@ const (
 	errGetProviderConfig    = "cannot get referenced ProviderConfig"
 	errTrackUsage           = "cannot track ProviderConfig usage"
 	errExtractCredentials   = "cannot extract credentials"
-	errUnmarshalCredentials = "cannot unmarshal template credentials as JSON"
+	errUnmarshalCredentials = "cannot unmarshal neosync credentials as JSON"
+	keyEndpoint = "endpoint"
+	keyApiToken = "api_token"
+	keyAccountId = "account_id"
 )
+
 
 // TerraformSetupBuilder builds Terraform a terraform.SetupFn function which
 // returns Terraform provider setup configuration
@@ -67,6 +71,17 @@ func TerraformSetupBuilder(version, providerSource, providerVersion string) terr
 			"username": creds["username"],
 			"password": creds["password"],
 		}*/
+		  // set provider configuration
+		ps.Configuration = map[string]any{}
+		if v, ok := creds[keyEndpoint]; ok {
+		ps.Configuration[keyEndpoint] = v
+		}
+		if v, ok := creds[keyApiToken]; ok {
+		ps.Configuration[keyApiToken] = v
+		}
+		if v, ok := creds[keyAccountId]; ok {
+		ps.Configuration[keyAccountId] = v
+		}
 		return ps, nil
 	}
 }
